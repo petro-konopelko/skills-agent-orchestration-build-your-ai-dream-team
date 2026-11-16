@@ -1,0 +1,32 @@
+{
+  "projects": [
+    {
+      "name": "Marketing Website Refresh",
+      "owner": "Avery Chen",
+      "status": "In Progress",
+      "recentActivity": "Homepage content approved",
+      "priority": "High"
+    },
+    {
+      "name": "Mobile Onboarding Improvements",
+      "owner": "Jordan Patel",
+      "status": "At Risk",
+      "recentActivity": "Usability test findings reviewed",
+      "priority": "Medium"
+    },
+    {
+      "name": "Analytics Pipeline Migration",
+      "owner": "Riley Gomez",
+      "status": "On Track",
+      "recentActivity": "Nightly sync completed successfully",
+      "priority": "High"
+    },
+    {
+      "name": "Support Workflow Automation",
+      "owner": "Morgan Davis",
+      "status": "Planned",
+      "recentActivity": "Scope finalized with operations team",
+      "priority": "Low"
+    }
+  ]
+}

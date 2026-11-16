@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Pulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="topbar">
+    <h1>Project Pulse</h1>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <section aria-labelledby="dashboard-heading">
+      <h2 id="dashboard-heading">Project Dashboard</h2>
+      <div id="dashboard-state" class="state-message" role="status" aria-live="polite">Loading projects…</div>
+      <div id="dashboard" class="dashboard" hidden></div>
+    </section>
+  </main>
+
+  <script>
+    (async function renderDashboard() {
+      const state = document.getElementById('dashboard-state');
+      const dashboard = document.getElementById('dashboard');
+
+      const showState = (message, isError) => {
+        dashboard.hidden = true;
+        dashboard.innerHTML = '';
+        state.hidden = false;
+        state.textContent = message;
+        state.classList.toggle('error', Boolean(isError));
+      };
+
+      try {
+        const response = await fetch('project-data.json');
+        if (!response.ok) {
+          throw new Error('Could not load project data.');
+        }
+
+        const data = await response.json();
+        const projects = Array.isArray(data.projects) ? data.projects : null;
+
+        if (!projects || projects.length === 0) {
+          showState('No projects available yet.');
+          return;
+        }
+
+        const cards = projects
+          .filter((project) =>
+            project &&
+            typeof project.name === 'string' &&
+            typeof project.owner === 'string' &&
+            typeof project.status === 'string' &&
+            typeof project.recentActivity === 'string' &&
+            typeof project.priority === 'string'
+          )
+          .map((project) => {
+            const article = document.createElement('article');
+            article.className = 'project-card';
+
+            article.innerHTML = `
+              <h3>${project.name}</h3>
+              <p><strong>Owner:</strong> ${project.owner}</p>
+              <p><span class="label">Status</span> <span class="badge status">${project.status}</span></p>
+              <p><span class="label">Recent Activity</span> <span class="badge activity">${project.recentActivity}</span></p>
+              <p><span class="label">Priority</span> <span class="badge priority">${project.priority}</span></p>
+            `;
+            return article;
+          });
+
+        if (cards.length === 0) {
+          showState('Project data is invalid or incomplete.', true);
+          return;
+        }
+
+        dashboard.replaceChildren(...cards);
+        dashboard.hidden = false;
+        state.hidden = true;
+      } catch (error) {
+        showState('Unable to load dashboard data. Please try again later.', true);
+      }
+    })();
+  </script>
+</body>
+</html>
